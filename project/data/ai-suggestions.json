@@ -1,0 +1,78 @@
+{
+  "contextualSuggestions": {
+    "highAttention": [
+      {
+        "message": "La clase está muy concentrada, ¿enviamos un quiz para mejorar el engagement?",
+        "type": "activity",
+        "icon": "activity",
+        "minAttention": 80
+      },
+      {
+        "message": "Excelente nivel de atención. ¿Aprovechamos con contenido más desafiante?",
+        "type": "activity", 
+        "icon": "activity",
+        "minAttention": 85
+      }
+    ],
+    "lowAttention": [
+      {
+        "message": "Atención general baja. ¿Hacemos una actividad colaborativa de 5 minutos?",
+        "type": "activity",
+        "icon": "activity",
+        "maxAttention": 60
+      },
+      {
+        "message": "Los estudiantes parecen cansados. ¿Hacemos un breve descanso activo?",
+        "type": "activity",
+        "icon": "activity", 
+        "maxAttention": 50
+      }
+    ],
+    "highDopamine": [
+      {
+        "message": "Los niveles de dopamina mejoraron. ¿Aprovechamos con contenido desafiante?",
+        "type": "activity",
+        "icon": "activity",
+        "minDopamine": 70,
+        "minStudentPercentage": 0.5
+      },
+      {
+        "message": "Gran motivación en la clase. ¿Enviamos una evaluación rápida?",
+        "type": "activity",
+        "icon": "activity",
+        "minDopamine": 75,
+        "minStudentPercentage": 0.6
+      }
+    ]
+  },
+  "studentSpecificSuggestions": {
+    "lowAttentionDopamine": [
+      "{name} bajó su nivel de atención, ¿enviamos dopamina?",
+      "{name} parece distraído/a, ¿aumentamos su dopamina?",
+      "Detectamos baja concentración en {name}, ¿aplicamos dopamina?"
+    ],
+    "highStressCortisol": [
+      "{name} presenta estrés elevado, ¿reducimos cortisol?",
+      "{name} tiene niveles altos de cortisol, ¿lo ayudamos a relajarse?",
+      "Estrés detectado en {name}, ¿reducimos su cortisol?"
+    ],
+    "lowMoodSerotonin": [
+      "{name} parece desmotivado/a, ¿enviamos serotonina?",
+      "El ánimo de {name} ha bajado, ¿aumentamos serotonina?",
+      "{name} necesita un impulso de bienestar, ¿aplicamos serotonina?"
+    ]
+  },
+  "thresholds": {
+    "lowAttention": 50,
+    "highAttention": 80,
+    "lowDopamine": 60,
+    "highDopamine": 70,
+    "highCortisol": 50,
+    "lowSerotonin": 50
+  },
+  "intervals": {
+    "suggestionGenerationMs": 18000,
+    "maxActiveSuggestions": 1,
+    "feedbackDisplayMs": 3500
+  }
+}

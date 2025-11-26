@@ -1,0 +1,8 @@
+node_modules/
+.next/
+.vercel/
+.turbo/
+.DS_Store
+.env*
+dist/
+out/
