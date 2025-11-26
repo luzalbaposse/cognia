@@ -45,7 +45,7 @@ export function StudentGrid({ students, onNeurotransmitter }: StudentGridProps) 
             whileHover={{ scale: 1.02 }}
             className={`border-2 ${getAttentionBorderColor(
               student.attentionLevel
-            )} rounded-xl p-4 bg-gradient-to-br from-white to-gray-50 hover:shadow-md transition-all`}
+            )} rounded-xl p-4 bg-white hover:shadow-md transition-all`}
           >
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center gap-3">
@@ -110,35 +110,50 @@ export function StudentGrid({ students, onNeurotransmitter }: StudentGridProps) 
               </div>
             </div>
 
-            {/* Quick Actions */}
-            <div className="flex gap-2">
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => onNeurotransmitter(student.id, 'dopamine', 10)}
-                className="flex-1 px-2 py-1 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg transition-colors text-center"
-                title="Enviar Dopamina"
-              >
-                <Droplet className="size-4 inline" />
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => onNeurotransmitter(student.id, 'serotonin', 10)}
-                className="flex-1 px-2 py-1 bg-pink-50 hover:bg-pink-100 text-pink-600 rounded-lg transition-colors text-center"
-                title="Enviar Serotonina"
-              >
-                <Heart className="size-4 inline" />
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => setSelectedStudent(student)}
-                className="flex-1 px-2 py-1 bg-orange-50 hover:bg-orange-100 text-orange-600 rounded-lg transition-colors text-center"
-                title="Reducir Cortisol con Música"
-              >
-                <Music2 className="size-4 inline" />
-              </motion.button>
+            {/* Quick Actions - Two Rows */}
+            <div className="space-y-2">
+              {/* First Row: Dopamine and Serotonin */}
+              <div className="flex gap-2">
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => onNeurotransmitter(student.id, 'dopamine', 10)}
+                  className="flex-1 px-2 py-1 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg transition-colors text-center"
+                  title="Enviar Dopamina"
+                >
+                  <Droplet className="size-4 inline" />
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => onNeurotransmitter(student.id, 'serotonin', 10)}
+                  className="flex-1 px-2 py-1 bg-pink-50 hover:bg-pink-100 text-pink-600 rounded-lg transition-colors text-center"
+                  title="Enviar Serotonina"
+                >
+                  <Heart className="size-4 inline" />
+                </motion.button>
+              </div>
+              {/* Second Row: Cortisol and Music */}
+              <div className="flex gap-2">
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => onNeurotransmitter(student.id, 'cortisol', -10)}
+                  className="flex-1 px-2 py-1 bg-orange-50 hover:bg-orange-100 text-orange-600 rounded-lg transition-colors text-center"
+                  title="Reducir Cortisol"
+                >
+                  <AlertTriangle className="size-4 inline" />
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => setSelectedStudent(student)}
+                  className="flex-1 px-2 py-1 bg-green-50 hover:bg-green-100 text-green-600 rounded-lg transition-colors text-center"
+                  title="Reproducir Música Relajante"
+                >
+                  <Music2 className="size-4 inline" />
+                </motion.button>
+              </div>
             </div>
           </motion.div>
         ))}

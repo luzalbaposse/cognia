@@ -1,0 +1,22 @@
+{
+  "availableStudents": [
+    { "name": "Alicia González", "deviceId": "NTD-001" },
+    { "name": "Bruno Martínez", "deviceId": "NTD-002" },
+    { "name": "Clara Fernández", "deviceId": "NTD-003" },
+    { "name": "Diego Ramírez", "deviceId": "NTD-004" },
+    { "name": "Emma Torres", "deviceId": "NTD-005" },
+    { "name": "Franco Silva", "deviceId": "NTD-006" },
+    { "name": "Graciela Morales", "deviceId": "NTD-007" },
+    { "name": "Hugo Pérez", "deviceId": "NTD-008" },
+    { "name": "Isabella López", "deviceId": "NTD-009" },
+    { "name": "Joaquín Castro", "deviceId": "NTD-010" },
+    { "name": "Kiara Ruiz", "deviceId": "NTD-011" },
+    { "name": "Lorenzo Vega", "deviceId": "NTD-012" },
+    { "name": "Martina Herrera", "deviceId": "NTD-013" },
+    { "name": "Nicolás Romero", "deviceId": "NTD-014" },
+    { "name": "Olivia Campos", "deviceId": "NTD-015" },
+    { "name": "Pablo Mendoza", "deviceId": "NTD-016" }
+  ],
+  "defaultClassSize": 8,
+  "maxClassSize": 12
+}

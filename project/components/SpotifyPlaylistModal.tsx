@@ -73,25 +73,39 @@ export function SpotifyPlaylistModal({ student, onClose }: SpotifyPlaylistModalP
   const { isAuthenticated, isReady, isPlaying, currentTrack, play, pause, resume } = useSpotify();
   const [playingPlaylistId, setPlayingPlaylistId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const handlePlayPlaylist = async (playlist: Playlist) => {
     if (!isAuthenticated || !isReady) {
+      setError('Spotify no está listo. Intenta reconectar.');
       return;
     }
 
     setIsLoading(true);
+    setError(null);
+    setSuccessMessage(null);
+    
     try {
       if (playingPlaylistId === playlist.id && isPlaying) {
         await pause();
         setPlayingPlaylistId(null);
+        setSuccessMessage('Música pausada');
       } else {
         await play(playlist.uri, student.id);
         setPlayingPlaylistId(playlist.id);
+        setSuccessMessage(`Reproduciendo ${playlist.name} para ${student.name}`);
       }
     } catch (error) {
       console.error('Error playing playlist:', error);
+      setError('Error reproduciendo música. Verifica tu conexión a Spotify Premium.');
     } finally {
       setIsLoading(false);
+      // Clear messages after 3 seconds
+      setTimeout(() => {
+        setError(null);
+        setSuccessMessage(null);
+      }, 3000);
     }
   };
 
@@ -145,6 +159,30 @@ export function SpotifyPlaylistModal({ student, onClose }: SpotifyPlaylistModalP
 
           {/* Content */}
           <div className="p-6">
+            {/* Error/Success Messages */}
+            <AnimatePresence>
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg"
+                >
+                  <p className="text-red-700 text-sm">{error}</p>
+                </motion.div>
+              )}
+              {successMessage && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg"
+                >
+                  <p className="text-green-700 text-sm">{successMessage}</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             {!isAuthenticated ? (
               <div className="text-center py-8">
                 <Music2 className="size-12 text-gray-300 mx-auto mb-4" />

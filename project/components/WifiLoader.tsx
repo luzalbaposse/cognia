@@ -6,7 +6,7 @@ interface WifiLoaderProps {
   text?: string;
 }
 
-export function WifiLoader({ text = "Sincronizando" }: WifiLoaderProps) {
+export function WifiLoader({ text = "" }: WifiLoaderProps) {
   return (
     <div className="flex flex-col items-center justify-center">
       <div className="relative w-16 h-16 flex items-center justify-center">

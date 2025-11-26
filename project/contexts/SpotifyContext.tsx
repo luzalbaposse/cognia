@@ -316,17 +316,33 @@ export function SpotifyProvider({ children }: { children: ReactNode }) {
   const play = useCallback(async (uri: string, studentId?: string) => {
     if (!accessToken || !deviceId) {
       console.error('Cannot play: not authenticated or no device');
-      return;
+      throw new Error('No access token or device ID available');
     }
 
     try {
+      // First, ensure our device is active
+      await fetch(`https://api.spotify.com/v1/me/player`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          device_ids: [deviceId],
+          play: false
+        }),
+      });
+
+      // Small delay to ensure device transfer is complete
+      await new Promise(resolve => setTimeout(resolve, 500));
+
       // Determine if it's a playlist or track
       const isPlaylist = uri.includes('playlist');
       const body = isPlaylist
         ? { context_uri: uri }
         : { uris: [uri] };
 
-      await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
+      const response = await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${accessToken}`,
@@ -335,9 +351,16 @@ export function SpotifyProvider({ children }: { children: ReactNode }) {
         body: JSON.stringify(body),
       });
 
-      console.log(`Playing ${uri} for student ${studentId || 'all'}`);
+      if (!response.ok) {
+        const errorData = await response.text();
+        console.error('Play request failed:', response.status, errorData);
+        throw new Error(`Play request failed: ${response.status}`);
+      }
+
+      console.log(`Successfully started playing ${uri} for student ${studentId || 'all'}`);
     } catch (error) {
       console.error('Error playing:', error);
+      throw error;
     }
   }, [accessToken, deviceId]);
 

@@ -1,7 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react';
-import { Sparkles, Droplet, Heart, AlertTriangle, Users, Check, X } from 'lucide-react';
+import { 
+  Sparkles, Droplet, Heart, AlertTriangle, Users, Check, X, 
+  Zap, Target, Music, Pause, HelpCircle, Activity, ClipboardCheck,
+  Brain, Wind, Moon
+} from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Student } from '../App';
 import suggestionsConfig from '../data/ai-suggestions.json';
@@ -17,10 +21,10 @@ interface AISuggestionsProps {
 
 interface Suggestion {
   id: string;
-  type: 'neurotransmitter' | 'activity';
+  type: 'neurotransmitter' | 'activity' | 'neuro';
   message: string;
   action?: () => void;
-  icon: 'dopamine' | 'serotonin' | 'cortisol' | 'activity';
+  icon: 'dopamine' | 'serotonin' | 'cortisol' | 'activity' | 'zap' | 'target' | 'users' | 'music' | 'pause' | 'help-circle' | 'sparkles' | 'clipboard-check' | 'brain' | 'wind' | 'moon';
   studentName?: string;
   status: 'pending' | 'accepted' | 'rejected';
   timestamp: number;
@@ -43,8 +47,10 @@ export function AISuggestions({
     ));
     
     // Show feedback message
-    if (suggestion.type === 'neurotransmitter') {
-      setFeedbackMessage(`Neurotransmisor aplicado a ${suggestion.studentName}`);
+    if (suggestion.type === 'neurotransmitter' || suggestion.type === 'neuro') {
+      setFeedbackMessage(suggestion.studentName ? 
+        `Intervención aplicada a ${suggestion.studentName}` : 
+        'Intervención neurológica aplicada');
     } else {
       setFeedbackMessage('Sugerencia aplicada exitosamente');
     }
@@ -121,7 +127,7 @@ export function AISuggestions({
         if (highDopamineStudents.length >= students.length * suggestion.minStudentPercentage) {
           contextualSuggestions.push({
             id: `dopamine-success-${Date.now()}`,
-            type: 'activity' as const,
+            type: suggestion.type as const,
             message: suggestion.message,
             icon: suggestion.icon as const,
             status: 'pending' as const,
@@ -129,6 +135,41 @@ export function AISuggestions({
           });
         }
       });
+
+      // Check for low dopamine students (new category)
+      if (suggestionsConfig.contextualSuggestions.lowDopamine) {
+        const avgDopamine = students.reduce((sum, s) => sum + s.neurotransmitters.dopamine, 0) / students.length;
+        const lowDopamineSuggestions = suggestionsConfig.contextualSuggestions.lowDopamine;
+        const validSuggestions = lowDopamineSuggestions.filter(s => avgDopamine <= s.maxDopamine);
+        if (validSuggestions.length > 0) {
+          const randomSuggestion = validSuggestions[Math.floor(Math.random() * validSuggestions.length)];
+          contextualSuggestions.push({
+            id: `low-dopamine-${Date.now()}`,
+            type: randomSuggestion.type as const,
+            message: randomSuggestion.message,
+            icon: randomSuggestion.icon as const,
+            status: 'pending' as const,
+            timestamp: Date.now(),
+          });
+        }
+      }
+
+      // Check for high stress/cortisol (new category)
+      if (suggestionsConfig.contextualSuggestions.highStressCortisol) {
+        const highCortisolStudents = students.filter(s => s.neurotransmitters.cortisol >= suggestionsConfig.thresholds.highCortisol);
+        suggestionsConfig.contextualSuggestions.highStressCortisol.forEach(suggestion => {
+          if (highCortisolStudents.length >= students.length * suggestion.minStudentPercentage) {
+            contextualSuggestions.push({
+              id: `high-cortisol-${Date.now()}`,
+              type: suggestion.type as const,
+              message: suggestion.message,
+              icon: suggestion.icon as const,
+              status: 'pending' as const,
+              timestamp: Date.now(),
+            });
+          }
+        });
+      }
 
       // Check for individual students needing attention
       students.forEach((student) => {
@@ -180,6 +221,23 @@ export function AISuggestions({
             timestamp: Date.now(),
           });
         }
+
+        // High glutamate (new category)
+        if (suggestionsConfig.studentSpecificSuggestions.highGlutamate && 
+            student.neurotransmitters.dopamine > suggestionsConfig.thresholds.highGlutamate) { // Using dopamine as proxy for glutamate
+          const messages = suggestionsConfig.studentSpecificSuggestions.highGlutamate;
+          const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+          newSuggestions.push({
+            id: `${student.id}-glutamate-${Date.now()}`,
+            type: 'neuro',
+            message: randomMessage.replace('{name}', student.name),
+            studentName: student.name,
+            icon: 'brain',
+            action: () => onNeurotransmitter(student.id, 'cortisol', -10), // Reduce stress to counter glutamate
+            status: 'pending' as const,
+            timestamp: Date.now(),
+          });
+        }
       });
 
       // Add contextual suggestions to the mix
@@ -215,7 +273,29 @@ export function AISuggestions({
       case 'cortisol':
         return <AlertTriangle className="size-5 text-orange-500" />;
       case 'activity':
-        return <Users className="size-5 text-purple-500" />;
+        return <Activity className="size-5 text-purple-500" />;
+      case 'zap':
+        return <Zap className="size-5 text-yellow-500" />;
+      case 'target':
+        return <Target className="size-5 text-red-500" />;
+      case 'users':
+        return <Users className="size-5 text-indigo-500" />;
+      case 'music':
+        return <Music className="size-5 text-green-500" />;
+      case 'pause':
+        return <Pause className="size-5 text-gray-500" />;
+      case 'help-circle':
+        return <HelpCircle className="size-5 text-blue-500" />;
+      case 'sparkles':
+        return <Sparkles className="size-5 text-purple-500" />;
+      case 'clipboard-check':
+        return <ClipboardCheck className="size-5 text-emerald-500" />;
+      case 'brain':
+        return <Brain className="size-5 text-pink-500" />;
+      case 'wind':
+        return <Wind className="size-5 text-cyan-500" />;
+      case 'moon':
+        return <Moon className="size-5 text-indigo-500" />;
       default:
         return <Sparkles className="size-5 text-gray-500" />;
     }
@@ -301,7 +381,7 @@ export function AISuggestions({
                         >
                           <Check className="size-3" />
                           <span className="text-xs">
-                            {suggestion.type === 'neurotransmitter' ? 'Sí' : 'Aceptar'}
+                            {(suggestion.type === 'neurotransmitter' || suggestion.type === 'neuro') ? 'Sí' : 'Aceptar'}
                           </span>
                         </motion.button>
                         <motion.button
@@ -312,7 +392,7 @@ export function AISuggestions({
                         >
                           <X className="size-3" />
                           <span className="text-xs">
-                            {suggestion.type === 'neurotransmitter' ? 'No' : 'Rechazar'}
+                            {(suggestion.type === 'neurotransmitter' || suggestion.type === 'neuro') ? 'No' : 'Rechazar'}
                           </span>
                         </motion.button>
                       </div>

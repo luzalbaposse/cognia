@@ -60,7 +60,7 @@ export function ClassReport({
             <motion.div
               animate={{ rotate: [0, 360] }}
               transition={{ duration: 2, ease: "linear" }}
-              className="bg-gradient-to-br from-[#0077FF] to-[#FF1D86] p-2 rounded-xl"
+              className="bg-[#0077FF] p-2 rounded-xl"
             >
               <Brain className="size-8 text-white" />
             </motion.div>
@@ -203,10 +203,10 @@ export function ClassReport({
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ delay: 0.6 + idx * 0.1 }}
                   whileHover={{ x: 5 }}
-                  className="flex items-center justify-between p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-xl"
+                  className="flex items-center justify-between p-4 bg-green-50 rounded-xl"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="size-12 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white">
+                    <div className="size-12 bg-green-500 rounded-full flex items-center justify-center text-white">
                       {idx + 1}
                     </div>
                     <div>
@@ -244,10 +244,10 @@ export function ClassReport({
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ delay: 0.6 + idx * 0.1 }}
                   whileHover={{ x: -5 }}
-                  className="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl"
+                  className="flex items-center justify-between p-4 bg-orange-50 rounded-xl"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="size-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center text-white">
+                    <div className="size-12 bg-orange-500 rounded-full flex items-center justify-center text-white">
                       {student.name.charAt(0)}
                     </div>
                     <div>

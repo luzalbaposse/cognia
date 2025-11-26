@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { ArrowLeft, BookOpen, Calendar, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Classroom } from '../App';
+import studentsData from '../data/predefined-students.json';
 
 interface CreateClassroomProps {
   onBack: () => void;
@@ -34,6 +35,10 @@ export function CreateClassroom({ onBack, onCreate }: CreateClassroomProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (subject && selectedDays.length > 0 && time) {
+      // Randomly select students for this class
+      const shuffled = [...studentsData.availableStudents].sort(() => 0.5 - Math.random());
+      const assignedStudents = shuffled.slice(0, studentsData.defaultClassSize);
+      
       onCreate({
         id: Date.now().toString(),
         name: subject, // Use subject as name
@@ -42,6 +47,8 @@ export function CreateClassroom({ onBack, onCreate }: CreateClassroomProps) {
           days: selectedDays,
           time,
         },
+        assignedStudents,
+        studentCount: assignedStudents.length,
       });
     }
   };

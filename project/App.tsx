@@ -22,6 +22,10 @@ export interface Classroom {
     days: string[]; // ['lunes', 'martes', etc.]
     time: string;
   };
+  assignedStudents: Array<{
+    name: string;
+    deviceId: string;
+  }>;
   studentCount?: number;
   completed?: boolean;
 }

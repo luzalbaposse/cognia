@@ -2,77 +2,132 @@
   "contextualSuggestions": {
     "highAttention": [
       {
-        "message": "La clase está muy concentrada, ¿enviamos un quiz para mejorar el engagement?",
+        "message": "Excelente nivel de enfoque colectivo. ¿Querés proponer un desafío rápido para mantener el flujo?",
         "type": "activity",
-        "icon": "activity",
+        "icon": "zap",
         "minAttention": 80
       },
       {
-        "message": "Excelente nivel de atención. ¿Aprovechamos con contenido más desafiante?",
-        "type": "activity", 
-        "icon": "activity",
+        "message": "La clase está en alto rendimiento. Podrías aprovechar para introducir un nuevo concepto clave.",
+        "type": "activity",
+        "icon": "target",
         "minAttention": 85
+      },
+      {
+        "message": "El grupo está sincronizado y receptivo. ¿Enviamos una consigna práctica grupal?",
+        "type": "activity",
+        "icon": "users",
+        "minAttention": 75
       }
     ],
     "lowAttention": [
       {
-        "message": "Atención general baja. ¿Hacemos una actividad colaborativa de 5 minutos?",
-        "type": "activity",
-        "icon": "activity",
+        "message": "La atención bajó en general. ¿Activamos un estímulo auditivo relajante para reencauzar el foco?",
+        "type": "neuro",
+        "icon": "music",
         "maxAttention": 60
       },
       {
-        "message": "Los estudiantes parecen cansados. ¿Hacemos un breve descanso activo?",
+        "message": "Detectamos distracción grupal. ¿Querés iniciar una pausa guiada de respiración?",
         "type": "activity",
-        "icon": "activity", 
+        "icon": "pause",
         "maxAttention": 50
+      },
+      {
+        "message": "El nivel de atención cayó. ¿Enviar una pregunta corta para reactivar el interés?",
+        "type": "activity",
+        "icon": "help-circle",
+        "maxAttention": 55
       }
     ],
     "highDopamine": [
       {
-        "message": "Los niveles de dopamina mejoraron. ¿Aprovechamos con contenido desafiante?",
+        "message": "Alta motivación detectada. ¿Aprovechamos para proponer una tarea de creatividad?",
         "type": "activity",
-        "icon": "activity",
+        "icon": "sparkles",
         "minDopamine": 70,
         "minStudentPercentage": 0.5
       },
       {
-        "message": "Gran motivación en la clase. ¿Enviamos una evaluación rápida?",
+        "message": "Los niveles de dopamina están elevados. Ideal momento para un mini reto colaborativo.",
         "type": "activity",
         "icon": "activity",
         "minDopamine": 75,
         "minStudentPercentage": 0.6
+      },
+      {
+        "message": "Motivación grupal en alza. ¿Querés consolidar el aprendizaje con una breve evaluación?",
+        "type": "activity",
+        "icon": "clipboard-check",
+        "minDopamine": 80,
+        "minStudentPercentage": 0.5
+      }
+    ],
+    "lowDopamine": [
+      {
+        "message": "Motivación en descenso. ¿Enviar una estimulación auditiva leve (música + dopamina)?",
+        "type": "neuro",
+        "icon": "music",
+        "maxDopamine": 55
+      },
+      {
+        "message": "Varios estudiantes parecen desconectados. ¿Activamos un refuerzo de dopamina grupal?",
+        "type": "neuro",
+        "icon": "brain",
+        "maxDopamine": 50
+      }
+    ],
+    "highStressCortisol": [
+      {
+        "message": "Tensión general elevada. ¿Querés iniciar una pausa de relajación o reducir cortisol?",
+        "type": "neuro",
+        "icon": "wind",
+        "minCortisol": 50,
+        "minStudentPercentage": 0.4
+      },
+      {
+        "message": "Estrés sostenido detectado en el aula. ¿Iniciar estímulo serotoninérgico (música suave + calma)?",
+        "type": "neuro",
+        "icon": "moon",
+        "minCortisol": 60,
+        "minStudentPercentage": 0.3
       }
     ]
   },
   "studentSpecificSuggestions": {
     "lowAttentionDopamine": [
-      "{name} bajó su nivel de atención, ¿enviamos dopamina?",
-      "{name} parece distraído/a, ¿aumentamos su dopamina?",
-      "Detectamos baja concentración en {name}, ¿aplicamos dopamina?"
+      "{name} perdió foco. ¿Activamos dopamina leve para reengancharlo/a?",
+      "{name} muestra baja concentración, ¿enviar refuerzo dopaminérgico?",
+      "Atención descendente en {name}. ¿Aplicamos dopamina + estímulo auditivo?"
     ],
     "highStressCortisol": [
-      "{name} presenta estrés elevado, ¿reducimos cortisol?",
-      "{name} tiene niveles altos de cortisol, ¿lo ayudamos a relajarse?",
-      "Estrés detectado en {name}, ¿reducimos su cortisol?"
+      "{name} tiene niveles de estrés altos, ¿iniciar relajación guiada?",
+      "Cortisol elevado en {name}, ¿reducir carga sensorial y aplicar serotonina?",
+      "{name} presenta sobrecarga. ¿Activar estímulo de calma?"
     ],
     "lowMoodSerotonin": [
-      "{name} parece desmotivado/a, ¿enviamos serotonina?",
-      "El ánimo de {name} ha bajado, ¿aumentamos serotonina?",
-      "{name} necesita un impulso de bienestar, ¿aplicamos serotonina?"
+      "El ánimo de {name} bajó, ¿aplicamos serotonina?",
+      "{name} se muestra desmotivado/a, ¿enviamos un impulso de bienestar?",
+      "Detectamos baja serotonina en {name}, ¿activar música + serotonina leve?"
+    ],
+    "highGlutamate": [
+      "{name} presenta sobrecarga cognitiva. ¿Reducimos estímulo visual?",
+      "Fatiga neuronal en {name}, ¿activar pausa breve?",
+      "Glutamato alto en {name}, ¿enviamos relajación auditiva?"
     ]
   },
   "thresholds": {
-    "lowAttention": 50,
+    "lowAttention": 55,
     "highAttention": 80,
-    "lowDopamine": 60,
+    "lowDopamine": 55,
     "highDopamine": 70,
-    "highCortisol": 50,
-    "lowSerotonin": 50
+    "highCortisol": 55,
+    "lowSerotonin": 50,
+    "highGlutamate": 65
   },
   "intervals": {
-    "suggestionGenerationMs": 18000,
+    "suggestionGenerationMs": 15000,
     "maxActiveSuggestions": 1,
-    "feedbackDisplayMs": 3500
+    "feedbackDisplayMs": 4000
   }
 }

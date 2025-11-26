@@ -18,6 +18,8 @@ import { Classroom, Student } from '../App';
 import { StudentGrid } from './StudentGrid';
 import { AISuggestions } from './AISuggestions';
 import { SendTaskModal } from './SendTaskModal';
+import { ActivityFeedbackModal } from './ActivityFeedbackModal';
+import { HighAttentionModal } from './HighAttentionModal';
 import { useSpotify } from '../contexts/SpotifyContext';
 
 interface ActiveClassroomProps {
@@ -34,23 +36,52 @@ export function ActiveClassroom({
   onFinalize,
 }: ActiveClassroomProps) {
   const [showTaskModal, setShowTaskModal] = useState(false);
+  const [showActivityModal, setShowActivityModal] = useState(false);
+  const [showHighAttentionModal, setShowHighAttentionModal] = useState(false);
   const [medianAttention, setMedianAttention] = useState(0);
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
+  const [hasTriggeredHighAttention, setHasTriggeredHighAttention] = useState(false);
   const { isAuthenticated, isReady, login, logout } = useSpotify();
 
   useEffect(() => {
-    // Update attention levels periodically
+    // Update attention levels periodically with natural decline
     const interval = setInterval(() => {
       onStudentsUpdate(
-        students.map((student) => ({
-          ...student,
-          attentionLevel: Math.max(
-            20,
-            Math.min(100, student.attentionLevel + (Math.random() - 0.5) * 10)
-          ),
-        }))
+        students.map((student) => {
+          // Base decline rate - attention naturally decreases over time
+          const baseDecline = -1.5; // 1.5% decrease per interval
+          
+          // Random fluctuation (smaller than before)
+          const randomFactor = (Math.random() - 0.7) * 3; // Slightly negative bias
+          
+          // Fatigue factor - higher attention students get more tired
+          const fatigueFactor = student.attentionLevel > 70 ? -0.5 : 0;
+          
+          // Occasional small recovery (20% chance)
+          const recoveryChance = Math.random() < 0.2 ? 2 : 0;
+          
+          const totalChange = baseDecline + randomFactor + fatigueFactor + recoveryChance;
+          
+          return {
+            ...student,
+            attentionLevel: Math.max(
+              15, // Minimum attention level
+              Math.min(100, student.attentionLevel + totalChange)
+            ),
+            // Also update neurotransmitters to reflect attention changes
+            neurotransmitters: {
+              ...student.neurotransmitters,
+              // Cortisol increases slightly as attention drops
+              cortisol: Math.min(100, student.neurotransmitters.cortisol + (totalChange < -2 ? 0.5 : 0)),
+              // Dopamine decreases slightly over time
+              dopamine: Math.max(0, student.neurotransmitters.dopamine - 0.3),
+              // Serotonin has small random fluctuations
+              serotonin: Math.max(0, Math.min(100, student.neurotransmitters.serotonin + (Math.random() - 0.6) * 1)),
+            }
+          };
+        })
       );
-    }, 3000);
+    }, 4000); // Slightly slower updates for more realistic progression
 
     return () => clearInterval(interval);
   }, [students, onStudentsUpdate]);
@@ -66,7 +97,22 @@ export function ActiveClassroom({
         ? (sorted[mid - 1] + sorted[mid]) / 2
         : sorted[mid];
     setMedianAttention(median);
-  }, [students]);
+
+    // Check if attention reached 80% and trigger high attention modal
+    if (median >= 80 && !hasTriggeredHighAttention && !showTaskModal && !showActivityModal) {
+      setShowHighAttentionModal(true);
+      setHasTriggeredHighAttention(true);
+      // Reset trigger after some time to allow re-triggering later
+      setTimeout(() => {
+        setHasTriggeredHighAttention(false);
+      }, 60000); // Reset after 1 minute
+    }
+
+    // Reset trigger if attention drops below 75%
+    if (median < 75 && hasTriggeredHighAttention) {
+      setHasTriggeredHighAttention(false);
+    }
+  }, [students, hasTriggeredHighAttention, showTaskModal, showActivityModal]);
 
   const handleNeurotransmitter = (
     studentId: string,
@@ -136,8 +182,7 @@ export function ActiveClassroom({
         },
       }))
     );
-    setFeedbackMessage('¡Actividad colaborativa iniciada! Los estudiantes están más relajados y enfocados.');
-    setTimeout(() => setFeedbackMessage(null), 4000);
+    setShowActivityModal(true);
   };
 
   return (
@@ -151,13 +196,13 @@ export function ActiveClassroom({
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="bg-gradient-to-br from-[#0077FF] to-[#FF1D86] p-2 rounded-xl">
+              <div className="bg-[#0077FF] p-2 rounded-xl">
                 <Brain className="size-8 text-white" />
               </div>
               <div>
                 <h2 className="text-gray-900">{classroom.name}</h2>
                 <p className="text-gray-500">
-                  {classroom.date} • {classroom.time}
+                  {classroom.schedule.days.join(', ')} • {classroom.schedule.time}
                 </p>
               </div>
             </div>
@@ -217,7 +262,7 @@ export function ActiveClassroom({
               <motion.div
                 animate={{ width: `${medianAttention}%` }}
                 transition={{ duration: 0.5 }}
-                className="h-full bg-gradient-to-r from-[#0077FF] to-[#FF1D86]"
+                className="h-full bg-[#0077FF]"
               />
             </div>
           </motion.div>
@@ -350,6 +395,24 @@ export function ActiveClassroom({
           onClose={() => setShowTaskModal(false)}
         />
       )}
+
+      {/* Activity Feedback Modal */}
+      <ActivityFeedbackModal
+        isOpen={showActivityModal}
+        onClose={() => setShowActivityModal(false)}
+      />
+
+      {/* High Attention Modal */}
+      <HighAttentionModal
+        isOpen={showHighAttentionModal}
+        onClose={() => setShowHighAttentionModal(false)}
+        onSendTask={() => {
+          setShowHighAttentionModal(false);
+          setShowTaskModal(true);
+        }}
+        students={students}
+        averageAttention={medianAttention}
+      />
     </div>
   );
 }

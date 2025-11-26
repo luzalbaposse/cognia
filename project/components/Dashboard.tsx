@@ -33,7 +33,7 @@ export function Dashboard({ onCreateClassroom, onStartSession, classrooms, sessi
             <motion.div
               whileHover={{ rotate: 360 }}
               transition={{ duration: 0.5 }}
-              className="bg-gradient-to-br from-[#0077FF] to-[#FF1D86] p-2 rounded-xl"
+              className="bg-[#0077FF] p-2 rounded-xl"
             >
               <Brain className="size-8 text-white" />
             </motion.div>
@@ -159,7 +159,7 @@ export function Dashboard({ onCreateClassroom, onStartSession, classrooms, sessi
                     <motion.div
                       whileHover={{ rotate: 360 }}
                       transition={{ duration: 0.5 }}
-                      className="size-12 bg-gradient-to-br from-[#0077FF] to-[#FF1D86] rounded-xl flex items-center justify-center text-white"
+                      className="size-12 bg-[#0077FF] rounded-xl flex items-center justify-center text-white"
                     >
                       {cls.name.charAt(0)}
                     </motion.div>

@@ -12,18 +12,9 @@ interface SyncDevicesProps {
   onSynced: (students: Student[]) => void;
 }
 
-const mockStudents = [
-  { name: 'Alicia González', deviceId: 'NTD-001' },
-  { name: 'Bruno Martínez', deviceId: 'NTD-002' },
-  { name: 'Clara Fernández', deviceId: 'NTD-003' },
-  { name: 'Diego Ramírez', deviceId: 'NTD-004' },
-  { name: 'Emma Torres', deviceId: 'NTD-005' },
-  { name: 'Franco Silva', deviceId: 'NTD-006' },
-  { name: 'Graciela Morales', deviceId: 'NTD-007' },
-  { name: 'Hugo Pérez', deviceId: 'NTD-008' },
-];
-
 export function SyncDevices({ classroom, onBack, onSynced }: SyncDevicesProps) {
+  // Use students assigned to this classroom
+  const assignedStudents = classroom.assignedStudents;
   const [syncing, setSyncing] = useState(false);
   const [syncComplete, setSyncComplete] = useState(false);
   const [syncedDevices, setSyncedDevices] = useState<string[]>([]);
@@ -32,13 +23,13 @@ export function SyncDevices({ classroom, onBack, onSynced }: SyncDevicesProps) {
     if (syncing) {
       const interval = setInterval(() => {
         setSyncedDevices((prev) => {
-          if (prev.length >= mockStudents.length) {
+          if (prev.length >= assignedStudents.length) {
             clearInterval(interval);
             // Wait a bit before showing completion
             setTimeout(() => setSyncComplete(true), 500);
             return prev;
           }
-          return [...prev, mockStudents[prev.length].deviceId];
+          return [...prev, assignedStudents[prev.length].deviceId];
         });
       }, 500);
 
@@ -51,7 +42,7 @@ export function SyncDevices({ classroom, onBack, onSynced }: SyncDevicesProps) {
   };
 
   const handleComplete = () => {
-    const students: Student[] = mockStudents.map((student, idx) => ({
+    const students: Student[] = assignedStudents.map((student, idx) => ({
       id: `student-${idx}`,
       name: student.name,
       deviceId: student.deviceId,
@@ -147,22 +138,22 @@ export function SyncDevices({ classroom, onBack, onSynced }: SyncDevicesProps) {
                 <div className="mb-6">
                   <div className="flex items-center justify-between mb-2">
                     <p className="text-gray-500">
-                      {syncedDevices.length}/{mockStudents.length}
+                      {syncedDevices.length}/{assignedStudents.length}
                     </p>
                   </div>
                   <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{
-                        width: `${(syncedDevices.length / mockStudents.length) * 100}%`,
+                        width: `${(syncedDevices.length / assignedStudents.length) * 100}%`,
                       }}
-                      className="h-full bg-gradient-to-r from-[#0077FF] to-[#FF1D86]"
+                      className="h-full bg-[#0077FF]"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2 mb-6 max-h-96 overflow-y-auto">
-                  {mockStudents.map((student, idx) => {
+                  {assignedStudents.map((student, idx) => {
                     const isSynced = syncedDevices.includes(student.deviceId);
                     return (
                       <motion.div
@@ -209,7 +200,7 @@ export function SyncDevices({ classroom, onBack, onSynced }: SyncDevicesProps) {
                   })}
                 </div>
 
-                {syncedDevices.length === mockStudents.length && (
+                {syncedDevices.length === assignedStudents.length && (
                   <motion.button
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
