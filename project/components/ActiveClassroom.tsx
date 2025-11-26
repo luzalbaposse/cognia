@@ -11,12 +11,14 @@ import {
   Users,
   TrendingUp,
   Sparkles,
+  Music2,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Classroom, Student } from '../App';
 import { StudentGrid } from './StudentGrid';
 import { AISuggestions } from './AISuggestions';
 import { SendTaskModal } from './SendTaskModal';
+import { useSpotify } from '../contexts/SpotifyContext';
 
 interface ActiveClassroomProps {
   classroom: Classroom;
@@ -34,6 +36,7 @@ export function ActiveClassroom({
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [medianAttention, setMedianAttention] = useState(0);
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
+  const { isAuthenticated, isReady, login, logout } = useSpotify();
 
   useEffect(() => {
     // Update attention levels periodically
@@ -306,6 +309,34 @@ export function ActiveClassroom({
                 >
                   <Sparkles className="size-5 text-purple-600" />
                   <span className="text-gray-900">Iniciar Actividad</span>
+                </motion.button>
+
+                {/* Spotify Connection Button */}
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={isAuthenticated ? logout : login}
+                  className={`w-full flex items-center gap-3 p-4 rounded-xl transition-all ${
+                    isAuthenticated
+                      ? 'bg-[#1DB954] hover:bg-[#1ed760] text-white'
+                      : 'bg-gray-900 hover:bg-gray-800 text-white'
+                  }`}
+                >
+                  <Music2 className="size-5" />
+                  <span className="flex-1 text-left">
+                    {isAuthenticated
+                      ? isReady
+                        ? 'Spotify Conectado'
+                        : 'Conectando...'
+                      : 'Conectar Spotify'}
+                  </span>
+                  {isAuthenticated && (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="size-2 bg-white rounded-full"
+                    />
+                  )}
                 </motion.button>
               </div>
             </motion.div>

@@ -1,8 +1,10 @@
 'use client'
 
-import { Activity, Droplet, Heart, AlertTriangle } from 'lucide-react';
+import { useState } from 'react';
+import { Activity, Droplet, Heart, AlertTriangle, Music2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Student } from '../App';
+import { SpotifyPlaylistModal } from './SpotifyPlaylistModal';
 
 interface StudentGridProps {
   students: Student[];
@@ -14,6 +16,8 @@ interface StudentGridProps {
 }
 
 export function StudentGrid({ students, onNeurotransmitter }: StudentGridProps) {
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
+
   const getAttentionColor = (level: number) => {
     if (level >= 80) return 'from-green-400 to-green-600';
     if (level >= 60) return 'from-blue-400 to-blue-600';
@@ -129,16 +133,24 @@ export function StudentGrid({ students, onNeurotransmitter }: StudentGridProps) 
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                onClick={() => onNeurotransmitter(student.id, 'cortisol', -10)}
+                onClick={() => setSelectedStudent(student)}
                 className="flex-1 px-2 py-1 bg-orange-50 hover:bg-orange-100 text-orange-600 rounded-lg transition-colors text-center"
-                title="Reducir Cortisol"
+                title="Reducir Cortisol con Música"
               >
-                <AlertTriangle className="size-4 inline" />
+                <Music2 className="size-4 inline" />
               </motion.button>
             </div>
           </motion.div>
         ))}
       </div>
+
+      {/* Spotify Playlist Modal */}
+      {selectedStudent && (
+        <SpotifyPlaylistModal
+          student={selectedStudent}
+          onClose={() => setSelectedStudent(null)}
+        />
+      )}
     </div>
   );
 }

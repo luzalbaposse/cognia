@@ -7,6 +7,7 @@ import { CreateClassroom } from './components/CreateClassroom';
 import { SyncDevices } from './components/SyncDevices';
 import { ActiveClassroom } from './components/ActiveClassroom';
 import { ClassReport } from './components/ClassReport';
+import { SpotifyProvider } from './contexts/SpotifyContext';
 
 export type AppState = 'login' | 'dashboard' | 'create-classroom' | 'sync-devices' | 'active-classroom' | 'report';
 
@@ -111,45 +112,47 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen">
-      {appState === 'login' && <LoginPage onLogin={handleLogin} />}
-      {appState === 'dashboard' && (
-        <Dashboard
-          onCreateClassroom={() => setAppState('create-classroom')}
-          onStartSession={handleStartSession}
-          classrooms={classrooms}
-          sessions={sessions}
-        />
-      )}
-      {appState === 'create-classroom' && (
-        <CreateClassroom
-          onBack={() => setAppState('dashboard')}
-          onCreate={handleCreateClassroom}
-        />
-      )}
-      {appState === 'sync-devices' && currentClassroom && (
-        <SyncDevices
-          classroom={currentClassroom}
-          onBack={() => setAppState('dashboard')}
-          onSynced={handleDevicesSynced}
-        />
-      )}
-      {appState === 'active-classroom' && currentClassroom && (
-        <ActiveClassroom
-          classroom={currentClassroom}
-          students={students}
-          onStudentsUpdate={setStudents}
-          onFinalize={handleFinalizeClass}
-        />
-      )}
-      {appState === 'report' && currentClassroom && (
-        <ClassReport
-          classroom={currentClassroom}
-          students={students}
-          onBackToDashboard={handleBackToDashboard}
-        />
-      )}
-    </div>
+    <SpotifyProvider>
+      <div className="min-h-screen">
+        {appState === 'login' && <LoginPage onLogin={handleLogin} />}
+        {appState === 'dashboard' && (
+          <Dashboard
+            onCreateClassroom={() => setAppState('create-classroom')}
+            onStartSession={handleStartSession}
+            classrooms={classrooms}
+            sessions={sessions}
+          />
+        )}
+        {appState === 'create-classroom' && (
+          <CreateClassroom
+            onBack={() => setAppState('dashboard')}
+            onCreate={handleCreateClassroom}
+          />
+        )}
+        {appState === 'sync-devices' && currentClassroom && (
+          <SyncDevices
+            classroom={currentClassroom}
+            onBack={() => setAppState('dashboard')}
+            onSynced={handleDevicesSynced}
+          />
+        )}
+        {appState === 'active-classroom' && currentClassroom && (
+          <ActiveClassroom
+            classroom={currentClassroom}
+            students={students}
+            onStudentsUpdate={setStudents}
+            onFinalize={handleFinalizeClass}
+          />
+        )}
+        {appState === 'report' && currentClassroom && (
+          <ClassReport
+            classroom={currentClassroom}
+            students={students}
+            onBackToDashboard={handleBackToDashboard}
+          />
+        )}
+      </div>
+    </SpotifyProvider>
   );
 }
 
