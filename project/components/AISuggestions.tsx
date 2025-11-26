@@ -95,9 +95,9 @@ export function AISuggestions({
           const randomSuggestion = validSuggestions[Math.floor(Math.random() * validSuggestions.length)];
           contextualSuggestions.push({
             id: `high-attention-${Date.now()}`,
-            type: 'activity' as const,
+            type: 'activity' as 'activity' | 'neuro' | 'neurotransmitter',
             message: randomSuggestion.message,
-            icon: randomSuggestion.icon as const,
+            icon: randomSuggestion.icon as any,
             status: 'pending' as const,
             timestamp: Date.now(),
           });
@@ -112,9 +112,9 @@ export function AISuggestions({
           const randomSuggestion = validSuggestions[Math.floor(Math.random() * validSuggestions.length)];
           contextualSuggestions.push({
             id: `low-attention-${Date.now()}`,
-            type: 'activity' as const,
+            type: 'activity' as 'activity' | 'neuro' | 'neurotransmitter',
             message: randomSuggestion.message,
-            icon: randomSuggestion.icon as const,
+            icon: randomSuggestion.icon as any,
             status: 'pending' as const,
             timestamp: Date.now(),
           });
@@ -127,9 +127,9 @@ export function AISuggestions({
         if (highDopamineStudents.length >= students.length * suggestion.minStudentPercentage) {
           contextualSuggestions.push({
             id: `dopamine-success-${Date.now()}`,
-            type: suggestion.type as const,
+            type: suggestion.type as 'activity' | 'neuro' | 'neurotransmitter',
             message: suggestion.message,
-            icon: suggestion.icon as const,
+            icon: suggestion.icon as any,
             status: 'pending' as const,
             timestamp: Date.now(),
           });
@@ -145,9 +145,9 @@ export function AISuggestions({
           const randomSuggestion = validSuggestions[Math.floor(Math.random() * validSuggestions.length)];
           contextualSuggestions.push({
             id: `low-dopamine-${Date.now()}`,
-            type: randomSuggestion.type as const,
+            type: randomSuggestion.type as 'activity' | 'neuro' | 'neurotransmitter',
             message: randomSuggestion.message,
-            icon: randomSuggestion.icon as const,
+            icon: randomSuggestion.icon as any,
             status: 'pending' as const,
             timestamp: Date.now(),
           });
@@ -161,9 +161,9 @@ export function AISuggestions({
           if (highCortisolStudents.length >= students.length * suggestion.minStudentPercentage) {
             contextualSuggestions.push({
               id: `high-cortisol-${Date.now()}`,
-              type: suggestion.type as const,
+              type: suggestion.type as 'activity' | 'neuro' | 'neurotransmitter',
               message: suggestion.message,
-              icon: suggestion.icon as const,
+              icon: suggestion.icon as any,
               status: 'pending' as const,
               timestamp: Date.now(),
             });
@@ -222,9 +222,10 @@ export function AISuggestions({
           });
         }
 
-        // High glutamate (new category)
+        // High glutamate (new category) - using high attention with high cortisol as proxy for glutamate overload
         if (suggestionsConfig.studentSpecificSuggestions.highGlutamate && 
-            student.neurotransmitters.dopamine > suggestionsConfig.thresholds.highGlutamate) { // Using dopamine as proxy for glutamate
+            student.attentionLevel > suggestionsConfig.thresholds.highGlutamate &&
+            student.neurotransmitters.cortisol > suggestionsConfig.thresholds.highCortisol) {
           const messages = suggestionsConfig.studentSpecificSuggestions.highGlutamate;
           const randomMessage = messages[Math.floor(Math.random() * messages.length)];
           newSuggestions.push({

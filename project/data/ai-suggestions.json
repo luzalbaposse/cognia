@@ -2,19 +2,19 @@
   "contextualSuggestions": {
     "highAttention": [
       {
-        "message": "Excelente nivel de enfoque colectivo. ¿Querés proponer un desafío rápido para mantener el flujo?",
+        "message": "¡Perfecto momento! La clase está súper enfocada. ¿Aprovechás para profundizar en el tema más complejo?",
         "type": "activity",
         "icon": "zap",
         "minAttention": 80
       },
       {
-        "message": "La clase está en alto rendimiento. Podrías aprovechar para introducir un nuevo concepto clave.",
+        "message": "El grupo está en estado de flow. ¿Agregás una pregunta desafiante para mantener el momentum?",
         "type": "activity",
         "icon": "target",
         "minAttention": 85
       },
       {
-        "message": "El grupo está sincronizado y receptivo. ¿Enviamos una consigna práctica grupal?",
+        "message": "Atención grupal excelente. ¿Propones un debate rápido para aprovechar la energía?",
         "type": "activity",
         "icon": "users",
         "minAttention": 75
@@ -22,19 +22,19 @@
     ],
     "lowAttention": [
       {
-        "message": "La atención bajó en general. ¿Activamos un estímulo auditivo relajante para reencauzar el foco?",
+        "message": "El grupo parece disperso. ¿Cambiás el ritmo con música de fondo suave?",
         "type": "neuro",
         "icon": "music",
         "maxAttention": 60
       },
       {
-        "message": "Detectamos distracción grupal. ¿Querés iniciar una pausa guiada de respiración?",
+        "message": "Se nota cansancio general. ¿Hacemos una pausa activa de 2 minutos?",
         "type": "activity",
         "icon": "pause",
         "maxAttention": 50
       },
       {
-        "message": "El nivel de atención cayó. ¿Enviar una pregunta corta para reactivar el interés?",
+        "message": "La atención se fragmentó. ¿Lanzás una pregunta intrigante para reconectar?",
         "type": "activity",
         "icon": "help-circle",
         "maxAttention": 55
@@ -96,24 +96,24 @@
   },
   "studentSpecificSuggestions": {
     "lowAttentionDopamine": [
-      "{name} perdió foco. ¿Activamos dopamina leve para reengancharlo/a?",
-      "{name} muestra baja concentración, ¿enviar refuerzo dopaminérgico?",
-      "Atención descendente en {name}. ¿Aplicamos dopamina + estímulo auditivo?"
+      "{name} parece desconcentrado/a. ¿Le das un rol protagónico en la siguiente actividad?",
+      "{name} se ve disperso/a. ¿Pruebás con una pregunta directa personalizada?",
+      "{name} necesita reconexión. ¿Cambiás su ubicación en la clase o le das una tarea especial?"
     ],
     "highStressCortisol": [
-      "{name} tiene niveles de estrés altos, ¿iniciar relajación guiada?",
-      "Cortisol elevado en {name}, ¿reducir carga sensorial y aplicar serotonina?",
-      "{name} presenta sobrecarga. ¿Activar estímulo de calma?"
+      "{name} se ve tenso/a. ¿Sugerís un ejercicio de respiración grupal?",
+      "{name} muestra signos de estrés. ¿Reducimos la presión con una actividad más lúdica?",
+      "{name} parece sobrecargado/a. ¿Le das un momento de pausa o un rol más relajado?"
     ],
     "lowMoodSerotonin": [
-      "El ánimo de {name} bajó, ¿aplicamos serotonina?",
-      "{name} se muestra desmotivado/a, ¿enviamos un impulso de bienestar?",
-      "Detectamos baja serotonina en {name}, ¿activar música + serotonina leve?"
+      "{name} se ve desanimado/a. ¿Incluis una dinámica colaborativa donde pueda brillar?",
+      "{name} parece desmotivado/a. ¿Comparte un ejemplo que conecte con sus intereses?",
+      "{name} necesita ánimo. ¿Resaltás una contribución positiva que haya hecho?"
     ],
     "highGlutamate": [
-      "{name} presenta sobrecarga cognitiva. ¿Reducimos estímulo visual?",
-      "Fatiga neuronal en {name}, ¿activar pausa breve?",
-      "Glutamato alto en {name}, ¿enviamos relajación auditiva?"
+      "{name} se ve sobrecargado/a cognitivamente. ¿Simplificás la información o haces una pausa?",
+      "{name} muestra fatiga mental. ¿Cambiás a una actividad más kinestésica?",
+      "{name} necesita un respiro cognitivo. ¿Proponés una actividad más relajada por unos minutos?"
     ]
   },
   "thresholds": {

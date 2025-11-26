@@ -12,14 +12,19 @@ import {
   TrendingUp,
   Sparkles,
   Music2,
+  BookOpen,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 import { Classroom, Student } from '../App';
 import { StudentGrid } from './StudentGrid';
 import { AISuggestions } from './AISuggestions';
 import { SendTaskModal } from './SendTaskModal';
 import { ActivityFeedbackModal } from './ActivityFeedbackModal';
 import { HighAttentionModal } from './HighAttentionModal';
+import { NeurotransmitterMixer } from './NeurotransmitterMixer';
+import { ActivityBank } from './ActivityBank';
+import { PilotMode } from './PilotMode';
 import { useSpotify } from '../contexts/SpotifyContext';
 
 interface ActiveClassroomProps {
@@ -41,6 +46,9 @@ export function ActiveClassroom({
   const [medianAttention, setMedianAttention] = useState(0);
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
   const [hasTriggeredHighAttention, setHasTriggeredHighAttention] = useState(false);
+  const [showStudentGrid, setShowStudentGrid] = useState(false);
+  const [showActivityBank, setShowActivityBank] = useState(false);
+  const [pilotModeActive, setPilotModeActive] = useState(false);
   const { isAuthenticated, isReady, login, logout } = useSpotify();
 
   useEffect(() => {
@@ -119,6 +127,8 @@ export function ActiveClassroom({
     type: 'dopamine' | 'serotonin' | 'cortisol',
     change: number
   ) => {
+    const student = students.find(s => s.id === studentId);
+    
     onStudentsUpdate(
       students.map((student) =>
         student.id === studentId
@@ -138,6 +148,55 @@ export function ActiveClassroom({
             }
           : student
       )
+    );
+
+    // Show toast notification
+    if (student) {
+      if (type === 'dopamine' && change > 0) {
+        toast.success(`Dopamine sent to ${student.name}!`);
+      } else if (type === 'serotonin' && change > 0) {
+        toast.success(`Serotonin sent to ${student.name}!`);
+      } else if (type === 'cortisol' && change < 0) {
+        toast.success(`Cortisol reduced for ${student.name}!`);
+      }
+    }
+  };
+
+  const handleBulkNeurotransmitter = (
+    type: 'dopamine' | 'serotonin' | 'cortisol',
+    change: number,
+    targets: 'all' | 'low' | 'high' = 'all'
+  ) => {
+    onStudentsUpdate(
+      students.map((student) => {
+        let shouldApply = false;
+        
+        if (targets === 'all') {
+          shouldApply = true;
+        } else if (targets === 'low') {
+          shouldApply = student.neurotransmitters[type] < 60;
+        } else if (targets === 'high') {
+          shouldApply = student.neurotransmitters[type] > 70;
+        }
+        
+        if (shouldApply) {
+          return {
+            ...student,
+            neurotransmitters: {
+              ...student.neurotransmitters,
+              [type]: Math.max(
+                0,
+                Math.min(100, student.neurotransmitters[type] + change)
+              ),
+            },
+            attentionLevel:
+              type === 'dopamine' || type === 'serotonin'
+                ? Math.min(100, student.attentionLevel + change / 3)
+                : student.attentionLevel,
+          };
+        }
+        return student;
+      })
     );
   };
 
@@ -185,13 +244,38 @@ export function ActiveClassroom({
     setShowActivityModal(true);
   };
 
+  const handleActivitySelect = (activity: any) => {
+    // Apply activity benefits to students
+    onStudentsUpdate(
+      students.map((student) => ({
+        ...student,
+        attentionLevel: Math.min(100, student.attentionLevel + (activity.neuroBenefits.focus ? 10 : 5)),
+        neurotransmitters: {
+          ...student.neurotransmitters,
+          dopamine: activity.neuroBenefits.dopamine 
+            ? Math.min(100, student.neurotransmitters.dopamine + 12)
+            : student.neurotransmitters.dopamine,
+          serotonin: activity.neuroBenefits.serotonin 
+            ? Math.min(100, student.neurotransmitters.serotonin + 10)
+            : student.neurotransmitters.serotonin,
+        },
+      }))
+    );
+    setShowActivityBank(false);
+  };
+
+  const handlePilotAutoAdjust = () => {
+    // Automatic adjustment for pilot mode
+    handleBoostAllAttention();
+  };
+
   return (
     <div className="min-h-screen">
       {/* Header */}
       <motion.header
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="bg-white border-b border-gray-200"
+        className="sticky top-0 z-40 bg-white border-b border-gray-200 backdrop-blur-md bg-white/95"
       >
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
@@ -204,6 +288,27 @@ export function ActiveClassroom({
                 <p className="text-gray-500">
                   {classroom.schedule.days.join(', ')} • {classroom.schedule.time}
                 </p>
+              </div>
+              {/* Real-time Attention Display */}
+              <div className="ml-6 flex items-center gap-4 px-4 py-2 bg-gray-50 rounded-xl">
+                <div className="flex items-center gap-2">
+                  <Activity className="size-5 text-blue-600" />
+                  <span className="text-gray-600 text-sm">Atención Promedio:</span>
+                  <motion.span 
+                    key={medianAttention.toFixed(1)}
+                    initial={{ scale: 1.2 }}
+                    animate={{ scale: 1 }}
+                    className={`font-semibold ${getAttentionColor(medianAttention)}`}
+                  >
+                    {medianAttention.toFixed(1)}%
+                  </motion.span>
+                </div>
+                <div className="w-px h-6 bg-gray-300" />
+                <div className="flex items-center gap-2">
+                  <Users className="size-5 text-purple-600" />
+                  <span className="text-gray-600 text-sm">Estudiantes:</span>
+                  <span className="font-semibold text-gray-900">{students.length}</span>
+                </div>
               </div>
             </div>
             <motion.button
@@ -302,17 +407,58 @@ export function ActiveClassroom({
           </motion.div>
         </div>
 
+        {/* Student View Toggle */}
+        <div className="mb-6">
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setShowStudentGrid(!showStudentGrid)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${
+              showStudentGrid
+                ? 'bg-[#0077FF] text-white'
+                : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+            }`}
+          >
+            <Users className="size-5" />
+            <span>{showStudentGrid ? 'Ocultar Estudiantes' : 'Ver Todos los Estudiantes'}</span>
+            <span className="ml-1 text-sm opacity-75">({students.length})</span>
+          </motion.button>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Students Grid */}
-          <div className="lg:col-span-2">
-            <StudentGrid
+          {/* Main Control Panel */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Neurotransmitter Mixer - Always visible */}
+            <NeurotransmitterMixer
               students={students}
-              onNeurotransmitter={handleNeurotransmitter}
+              onBulkNeurotransmitter={handleBulkNeurotransmitter}
             />
+
+            {/* Students Grid - Conditional */}
+            {showStudentGrid && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <StudentGrid
+                  students={students}
+                  onNeurotransmitter={handleNeurotransmitter}
+                />
+              </motion.div>
+            )}
           </div>
 
           {/* AI Suggestions & Actions */}
           <div className="space-y-6">
+            <PilotMode
+              isActive={pilotModeActive}
+              onToggle={setPilotModeActive}
+              currentAttention={medianAttention}
+              onAutoAdjust={handlePilotAutoAdjust}
+            />
+            
             <AISuggestions
               students={students}
               onNeurotransmitter={handleNeurotransmitter}
@@ -344,6 +490,16 @@ export function ActiveClassroom({
                 >
                   <Zap className="size-5 text-yellow-600" />
                   <span className="text-gray-900">Aumentar Toda la Atención</span>
+                </motion.button>
+
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setShowActivityBank(true)}
+                  className="w-full flex items-center gap-3 p-4 bg-purple-50 hover:bg-purple-100 rounded-xl transition-colors"
+                >
+                  <BookOpen className="size-5 text-purple-600" />
+                  <span className="text-gray-900">Banco de Actividades</span>
                 </motion.button>
 
                 <motion.button
@@ -413,6 +569,15 @@ export function ActiveClassroom({
         students={students}
         averageAttention={medianAttention}
       />
+
+      {/* Activity Bank Modal */}
+      {showActivityBank && (
+        <ActivityBank
+          currentSubject={classroom.subject}
+          onActivitySelect={handleActivitySelect}
+          onClose={() => setShowActivityBank(false)}
+        />
+      )}
     </div>
   );
 }

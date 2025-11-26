@@ -8,6 +8,7 @@ import { SyncDevices } from './components/SyncDevices';
 import { ActiveClassroom } from './components/ActiveClassroom';
 import { ClassReport } from './components/ClassReport';
 import { SpotifyProvider } from './contexts/SpotifyContext';
+import { Toaster } from './components/ui/sonner';
 
 export type AppState = 'login' | 'dashboard' | 'create-classroom' | 'sync-devices' | 'active-classroom' | 'report';
 
@@ -176,6 +177,7 @@ function App() {
   return (
     <SpotifyProvider>
       <div className="min-h-screen">
+        <Toaster />
         {appState === 'login' && <LoginPage onLogin={handleLogin} />}
         {appState === 'dashboard' && (
           <Dashboard

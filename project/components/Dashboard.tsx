@@ -1,8 +1,10 @@
 'use client'
 
-import { Brain, Plus, BookOpen, Calendar, Users, Clock, Play, ChevronRight } from 'lucide-react';
+import { useState } from 'react';
+import { Brain, Plus, BookOpen, Calendar, Users, Clock, Play, ChevronRight, GraduationCap } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Classroom, ClassSession } from '../App';
+import { EducationSection } from './EducationSection';
 
 interface DashboardProps {
   onCreateClassroom: () => void;
@@ -12,6 +14,7 @@ interface DashboardProps {
 }
 
 export function Dashboard({ onCreateClassroom, onStartSession, classrooms, sessions }: DashboardProps) {
+  const [showEducation, setShowEducation] = useState(false);
   const totalStudents = sessions.reduce((sum, session) => sum + (session.studentCount || 0), 0);
   const thisWeekSessions = sessions.filter(session => {
     const sessionDate = new Date(session.date);
@@ -43,6 +46,16 @@ export function Dashboard({ onCreateClassroom, onStartSession, classrooms, sessi
             </div>
           </div>
           <div className="flex items-center gap-3">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setShowEducation(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-xl transition-colors"
+            >
+              <GraduationCap className="size-5" />
+              <span>Aprende sobre Cognia</span>
+            </motion.button>
+            
             <motion.div
               whileHover={{ scale: 1.1 }}
               className="size-12 bg-blue-100 rounded-full flex items-center justify-center cursor-pointer"
@@ -73,7 +86,7 @@ export function Dashboard({ onCreateClassroom, onStartSession, classrooms, sessi
             className="bg-[#0077FF] hover:bg-blue-600 text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all flex items-center gap-2"
           >
             <Plus className="size-5" />
-            Crear Nueva Clase
+            Crear Nueva Materia
           </motion.button>
         </motion.div>
 
@@ -91,7 +104,7 @@ export function Dashboard({ onCreateClassroom, onStartSession, classrooms, sessi
                 <BookOpen className="size-6 text-blue-600" />
               </div>
             </div>
-            <p className="text-gray-500 mb-1">Total Clases</p>
+            <p className="text-gray-500 mb-1">Total Materias</p>
             <p className="text-gray-900">{classrooms.length}</p>
           </motion.div>
 
@@ -141,8 +154,8 @@ export function Dashboard({ onCreateClassroom, onStartSession, classrooms, sessi
               <div className="inline-flex items-center justify-center size-16 bg-gray-100 rounded-full mb-4">
                 <BookOpen className="size-8 text-gray-400" />
               </div>
-              <p className="text-gray-500 mb-2">Aún no hay clases</p>
-              <p className="text-gray-400">¡Crea tu primera clase para comenzar!</p>
+              <p className="text-gray-500 mb-2">Aún no hay materias</p>
+              <p className="text-gray-400">¡Crea tu primera materia para comenzar!</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -186,7 +199,7 @@ export function Dashboard({ onCreateClassroom, onStartSession, classrooms, sessi
                       className="flex items-center gap-1 px-3 py-1 bg-[#0077FF] hover:bg-blue-600 text-white rounded-lg transition-all"
                     >
                       <Play className="size-4" />
-                      Iniciar
+                      Empezar Clase
                     </motion.button>
                     <ChevronRight className="size-5 text-gray-400" />
                   </div>
@@ -196,6 +209,11 @@ export function Dashboard({ onCreateClassroom, onStartSession, classrooms, sessi
           )}
         </motion.div>
       </main>
+
+      {/* Education Modal */}
+      {showEducation && (
+        <EducationSection onClose={() => setShowEducation(false)} />
+      )}
     </div>
   );
 }

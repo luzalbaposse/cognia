@@ -35,13 +35,13 @@ export function CreateClassroom({ onBack, onCreate }: CreateClassroomProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (subject && selectedDays.length > 0 && time) {
-      // Randomly select students for this class
+      // Randomly select students for this materia
       const shuffled = [...studentsData.availableStudents].sort(() => 0.5 - Math.random());
       const assignedStudents = shuffled.slice(0, studentsData.defaultClassSize);
       
       onCreate({
         id: Date.now().toString(),
-        name: subject, // Use subject as name
+        name: subject, // Use subject as materia name
         subject,
         schedule: {
           days: selectedDays,
@@ -73,9 +73,9 @@ export function CreateClassroom({ onBack, onCreate }: CreateClassroomProps) {
           transition={{ delay: 0.1 }}
           className="bg-white rounded-3xl shadow-xl p-8"
         >
-          <h2 className="text-gray-900 mb-2">Crear Nueva Clase</h2>
+          <h2 className="text-gray-900 mb-2">Crear Nueva Materia</h2>
           <p className="text-gray-600 mb-8">
-            Configura una nueva clase para tus estudiantes
+            Configura una nueva materia para tus estudiantes
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
